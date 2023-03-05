@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- <meta http-equiv="refresh" content="2" > -->
+    <style>
+        body {
+            background-color: white;
+        }
+        .login-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .card {
+            width: 400px;
+        }
+        .image-container {
+            background-image: url('img/login.png');
+            background-size: cover;
+            background-position: center;
+            height: 50vh;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        @media (min-width: 576px) {
+            .image-container {
+                height: 100vh;
+                width: 55%;
+                position: relative;
+                float: left;
+            }
+
+            .login-container {
+                width: 45%;
+                float: right;
+                height: 100vh;
+            }
+        }
+
+        @media (max-width: 575px) {
+            .image-container {
+                height: 33.33vh;
+                width: 100%;
+            }
+
+            .login-container {
+                width: 100%;
+                position: absolute;
+                bottom: 0;
+            }
+        }
+    </style>
+  </head>
+  <body>
+    <div class="image-container"></div>
+    <div class="login-container">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Login Lets check</h5>
+          <form id="login-form">
+            <div class="form-group">
+              <label for="user-type">User Type</label>
+              <select class="form-control" id="user-type" name="user_type">
+                <option value="student">Student</option>
+                <option value="institute">Institute</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="username">Email</label>
+              <input type="text" class="form-control" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="lib/http-service.js"></script>
+    <script>
+      $(function() {
+        $('#login-form').submit(function(event) {
+          event.preventDefault();
+          const userType = $('#user-type').val();
+          const username = $('#username').val();
+          const password = $('#password').val();
+          HttpService.postRequest('/auth/signin', {
+              userType: userType,
+              email: username,
+              password: password
+          }, function(response) {
+              localStorage.setItem('token', response.token);
+              localStorage.setItem('userType', response.userType);
+              localStorage.setItem('id', response.id);
+              window.location.href = '/index.html';
+          }, function(response) {
+              failureCallback(response);
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
